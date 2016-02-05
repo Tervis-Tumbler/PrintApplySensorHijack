@@ -26,10 +26,10 @@ int largeBox = 3;
 int smallBox = 6;
 
 // Time to delay large box in milliseconds.
-int largeBoxDelay = 500;
+int largeBoxDelay = 100;
 
 // Time to delay small box in milliseconds.
-int smallBoxDelay = 200;
+int smallBoxDelay = 50;
 
 // Time to delay until next cycle in milliseconds.
 int cycleDelay = 1000;
