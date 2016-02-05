@@ -71,7 +71,7 @@ void loop() {
       delay(signalDelay);
       digitalWrite(strokeOutput,HIGH);
       delay(cycleDelay);
-      digitalWrite(strokeOutput,HIGH);
+      digitalWrite(strokeOutput,LOW);
       digitalWrite(yellowLED,LOW);
       }
     }
