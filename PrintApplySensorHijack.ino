@@ -25,14 +25,26 @@ int largeBox = 3;
 // to detect a small box.
 int smallBox = 6;
 
-// Time to delay signal in milliseconds.
-int signalDelay = 300;
+// Time to delay large box in milliseconds.
+int largeBoxDelay = 500;
+
+// Time to delay small box in milliseconds.
+int smallBoxDelay = 200;
 
 // Time to delay until next cycle in milliseconds.
 int cycleDelay = 1000;
 
 // Create ultrasonic sensor object.
 Ultrasonic ultrasonic(usTrigger,usEcho);
+
+void randomStrokeDelay (int timeDelay, int led){
+  digitalWrite(led,HIGH);
+  delay(timeDelay);
+  digitalWrite(strokeOutput,HIGH);
+  delay(cycleDelay);
+  digitalWrite(strokeOutput,LOW);
+  digitalWrite(led,LOW);
+  }
 
 void setup() {
   pinMode(sensorSwitch,INPUT_PULLUP);
@@ -58,21 +70,12 @@ void loop() {
     // If a small box is detected, pass through
     // box sensor signal to PrintApply.
     else if (distance > smallBox) {
-      digitalWrite(redLED,HIGH);
-      digitalWrite(strokeOutput,HIGH);
-      delay(1000);
-      digitalWrite(strokeOutput,LOW);
-      digitalWrite(redLED,LOW);
+      randomStrokeDelay(smallBoxDelay,redLED);
       }
     
     // Otherwise, assume large box.
     else {
-      digitalWrite(yellowLED,HIGH);
-      delay(signalDelay);
-      digitalWrite(strokeOutput,HIGH);
-      delay(cycleDelay);
-      digitalWrite(strokeOutput,LOW);
-      digitalWrite(yellowLED,LOW);
+      randomStrokeDelay(largeBoxDelay,yellowLED);
       }
     }
   delay(25);
