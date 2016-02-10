@@ -33,10 +33,10 @@ int smallBox = 10;
 int largeBoxDelay = 100;
 
 // Time to delay medium box in milliseconds.
-int mediumBoxDelay = 70;
+int mediumBoxDelay = 65;
 
 // Time to delay small box in milliseconds.
-int smallBoxDelay = 50;
+int smallBoxDelay = 53;
 
 // Time to delay until next cycle in milliseconds.
 int cycleDelay = 1000;
@@ -52,6 +52,25 @@ void randomStrokeDelay (int timeDelay, int led){
   digitalWrite(strokeOutput,LOW);
   digitalWrite(led,LOW);
   }
+
+void consoleOutput (int d, int box) {
+  // Used for debugging. Shows distance of applicator
+  // from ultrasonic sensor when box sensor is triggered.
+  Serial.print("Distance: ");
+  Serial.print(d);
+  switch (box) {
+    case 1: // Small box
+      Serial.println("   Small");
+      break;
+    case 2: // Medium box
+      Serial.println("   Medium");
+      break;
+    case 3: // Large box
+      Serial.println("   Large");
+      break;
+    Serial.println("");
+  }
+}
 
 void setup() {
   Serial.begin(9600);
@@ -71,9 +90,6 @@ void loop() {
     
     // Grab distance to applicator plate.
     distance = ultrasonic.Ranging(INC);
-    
-    Serial.print("Distance: ");
-    Serial.print(distance);
 
     // Do nothing if at rest.
     if (distance < largeBox) {}
@@ -82,22 +98,21 @@ void loop() {
     // to smallBoxDelay.
     else if (distance > smallBox) {
       randomStrokeDelay(smallBoxDelay,redLED);
-      Serial.println("   Small");
-      }
+      consoleOutput (distance, 1);
+    }
       
     // If a medium box is detected, delay signal according
     // to mediumBoxDelay.
     else if (distance > mediumBox) {
       randomStrokeDelay(mediumBoxDelay,yellowLED);
-      Serial.println("   Med");
+      consoleOutput (distance, 2);
     }
     
     // Otherwise, assume large box.
     else {
       randomStrokeDelay(largeBoxDelay,yellowLED);
-      Serial.println("   Large");
-      }
-    Serial.println("");
+      consoleOutput (distance, 3);
     }
+  }
   delay(1);
 }

@@ -53,35 +53,60 @@ void setup(){
 
 void loop(){
   if (!digitalRead(sensorSwitch)){
-    timePulse1 = float(ultrasonic.Timing())/1000000;
-    Serial.print("Time Pulse 1: ");
-    Serial.println(timePulse1,10);
-    delay(timeSample);
-    timePulse2 = float(ultrasonic.Timing())/1000000;
-    Serial.print("Time Pulse 2: ");
-    Serial.println(timePulse2,10);
-    float diff = timePulse2 - timePulse1;
-    Serial.print("Difference: ");
-    if (diff > 0) {
-      digitalWrite(yellowLED,HIGH);
-    }
-    else if (diff < 0) {
-      digitalWrite(redLED,HIGH);
-    }
-    Serial.println(diff,10);
-    // Insane math to calculate velocity with two ultrasonic pulses
-    velocityInit = (velocitySound*(timePulse2-timePulse1))/(2*timeSample);
-    Serial.print("Velocity: ");
-    Serial.println(velocityInit,10);
-    Serial.println("");
-    delay(20);
+    int d1;
+    int d2;
+    d1 = ultrasonic.Ranging(CM);
+    delay(50);
+    d2 = ultrasonic.Ranging(CM);
+    Serial.print("d1: ");
+    Serial.print(d1);
+    Serial.print("   d2:");
+    Serial.println(d2);
+    
+    float v = (float(d2)-float(d1))/.05;
+    Serial.print("Speed: ");
+    Serial.print(v,4);
+    Serial.println(" cm/S");
+    delay(1);
     digitalWrite(strokeOutput,HIGH);
     delay(10);
     digitalWrite(strokeOutput,LOW);
     delay(cycleDelay-500);
-    digitalWrite(redLED,LOW);
-    digitalWrite(yellowLED,LOW);
+    
   }
   delay(1);
 }
 
+//void loop(){
+//  if (!digitalRead(sensorSwitch)){
+//    timePulse1 = float(ultrasonic.Timing())/1000000;
+//    Serial.print("Time Pulse 1: ");
+//    Serial.println(timePulse1,10);
+//    delay(timeSample);
+//    timePulse2 = float(ultrasonic.Timing())/1000000;
+//    Serial.print("Time Pulse 2: ");
+//    Serial.println(timePulse2,10);
+//    float diff = timePulse2 - timePulse1;
+//    Serial.print("Difference: ");
+//    if (diff > 0) {
+//      digitalWrite(yellowLED,HIGH);
+//    }
+//    else if (diff < 0) {
+//      digitalWrite(redLED,HIGH);
+//    }
+//    Serial.println(diff,10);
+//    // Insane math to calculate velocity with two ultrasonic pulses
+//    velocityInit = (velocitySound*(timePulse2-timePulse1))/(2*timeSample);
+//    Serial.print("Velocity: ");
+//    Serial.println(velocityInit,10);
+//    Serial.println("");
+//    delay(20);
+//    digitalWrite(strokeOutput,HIGH);
+//    delay(10);
+//    digitalWrite(strokeOutput,LOW);
+//    delay(cycleDelay-500);
+//    digitalWrite(redLED,LOW);
+//    digitalWrite(yellowLED,LOW);
+//  }
+//  delay(1);
+//}
