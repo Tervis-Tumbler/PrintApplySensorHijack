@@ -1,49 +1,48 @@
 #include <Ultrasonic.h>
 
 // Intercepted signals.
-int sensorSwitch = 12;
-int strokeOutput = 13;
+int sensorSwitch = 4;
+int strokeOutput = 5;
 
 // Ultrasonic sensor pins.
-int usVCC = 4;
-int usGND = 7;
-int usTrigger = 5;
-int usEcho = 6;
+//int usVCC = 4;
+//int usGND = 7;
+int usTrigger = 8;
+int usEcho = 9;
+
+// LED status pins
+int redLED = 7;
+int yellowLED = 6;
 
 // Initialize distance variables.
 int distance;
 
-// LED status pins
-int redLED = 11;
-int yellowLED = 10;
-
 // Minimum distance in inches from ultrasonic sensor
 // to detect a large box.
-int largeBox = 3;
+int largeBox = 9;
 
 // Minimum distance in inches from ultrasonic sensor
 // to detect a medium box.
-int mediumBox = 6;
+int mediumBox = 15;
 
 // Minimum distance in inches from ultrasonic sensor
 // to detect a small box.
-int smallBox = 10;
+int smallBox = 26;
 
 // Time to delay large box in milliseconds.
-int largeBoxDelay = 100;
+int largeBoxDelay = 110;
 
 // Time to delay medium box in milliseconds.
-int mediumBoxDelay = 65;
+int mediumBoxDelay = 80;
 
 // Time to delay small box in milliseconds.
-int smallBoxDelay = 53;
+int smallBoxDelay = 55;
 
 // Time to delay until next cycle in milliseconds.
 int cycleDelay = 1000;
 
 // Create ultrasonic sensor object.
 Ultrasonic ultrasonic(usTrigger,usEcho);
-
 void randomStrokeDelay (int timeDelay, int led){
   digitalWrite(led,HIGH);
   delay(timeDelay);
@@ -78,10 +77,24 @@ void setup() {
   pinMode(strokeOutput,OUTPUT);
   pinMode(redLED,OUTPUT);
   pinMode(yellowLED,OUTPUT);
-  pinMode(usVCC,OUTPUT);
-  pinMode(usGND,OUTPUT);
-  digitalWrite(usVCC,HIGH);
-  digitalWrite(usGND,LOW);
+//  pinMode(usVCC,OUTPUT);
+//  pinMode(usGND,OUTPUT);
+  Serial.println("Starting...");
+//  digitalWrite(usVCC,LOW);
+  digitalWrite(usTrigger,LOW);
+//  digitalWrite(usGND,LOW);
+  delay(1000);
+//  digitalWrite(usVCC,HIGH);
+  Serial.print("Test read 1: ");
+  Serial.println(ultrasonic.Ranging(CM));
+  delay(1000);
+  Serial.print("Test read 2: ");
+  Serial.println(ultrasonic.Ranging(CM));  
+  delay(1000);
+  Serial.print("Test read 2: ");
+  Serial.println(ultrasonic.Ranging(CM)); 
+  Serial.println("Ready!");
+  
 }
 
 void loop() {
@@ -89,7 +102,7 @@ void loop() {
   if (!digitalRead(sensorSwitch)){
     
     // Grab distance to applicator plate.
-    distance = ultrasonic.Ranging(INC);
+    distance = ultrasonic.Ranging(CM);
 
     // Do nothing if at rest.
     if (distance < largeBox) {}

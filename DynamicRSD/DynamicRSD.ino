@@ -1,4 +1,15 @@
 #include <Ultrasonic.h>
+#include <Wire.h>
+#include <ZX_Sensor.h>
+
+// Constants
+const int ZX_ADDR = 0x10;  // ZX Sensor I2C address
+
+// Global Variables
+ZX_Sensor zx_sensor = ZX_Sensor(ZX_ADDR);
+uint8_t z_pos;
+
+
 
 // Intercepted signals.
 int sensorSwitch = 12;
@@ -39,7 +50,7 @@ float timePulse2;
 
 Ultrasonic ultrasonic(usTrigger,usEcho,timeOut);
 
-void setup(){
+void setup(){  
   Serial.begin(9600);
   pinMode(sensorSwitch,INPUT_PULLUP);
   pinMode(strokeOutput,OUTPUT);
@@ -55,9 +66,10 @@ void loop(){
   if (!digitalRead(sensorSwitch)){
     int d1;
     int d2;
-    d1 = ultrasonic.Ranging(CM);
+    
+//    d1 = ultrasonic.Ranging(CM);
     delay(50);
-    d2 = ultrasonic.Ranging(CM);
+//    d2 = ultrasonic.Ranging(CM);
     Serial.print("d1: ");
     Serial.print(d1);
     Serial.print("   d2:");
