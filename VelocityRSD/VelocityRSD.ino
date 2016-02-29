@@ -1,81 +1,81 @@
 #include <SPI.h>
 
 // Intercepted signals.
-int sensorSwitch = 4;
-int strokeOutput = 5;
+int boxSensorPin = 4;
+int randomStrokeDelayOutputPin = 5;
 
 // LED status pins
 int redLED = 7;
 int yellowLED = 6;
 
 // Accelerometer cable select
-int CS = 10;
+int spiCableSelect = 10;
 
-long area = 0;
-int tDelay = 5;
-int applyStart = 2;
-bool velocityRead = false;
+long accelerometerCurveArea = 0;
+int accelerometerSampleDelay = 5;
+int applicatorHomePositionSensor = 2;
+//bool velocityRead = false;
 long minVelocity = 6000;
 long maxVelocity = 45000;
-int cycleDelay = 500;
-int RSD;
-int add;
+int cycleDelay = 1000;
+int randomStrokeDelay;
+int registerAddress;
 
 SPISettings settingsA(400000,MSBFIRST,SPI_MODE3);
 
-void adxlInit (){
+void initiateAccelerometer (){
 
   SPI.begin();
-  pinMode(CS,OUTPUT);
-  digitalWrite(CS,HIGH);
+  pinMode(spiCableSelect,OUTPUT);
+  digitalWrite(spiCableSelect,HIGH);
 
   SPI.beginTransaction(settingsA);
-  digitalWrite(CS,LOW);
+  digitalWrite(spiCableSelect,LOW);
 
 //  PowerCtl 
-  add = 0x2D;
-  add = add | 0x40;
-  SPI.transfer(add);
+  registerAddress = 0x2D;
+  registerAddress = registerAddress | 0x40;
+  SPI.transfer(registerAddress);
   SPI.transfer(0x08);
 
-  digitalWrite(CS,HIGH);
+  digitalWrite(spiCableSelect,HIGH);
   delay(1);
-  digitalWrite(CS,LOW);
+  digitalWrite(spiCableSelect,LOW);
 
 //  Data Format
-  add = 0x31;
-  add = add | 0x40;
-  SPI.transfer(add);
+  registerAddress = 0x31;
+  registerAddress = registerAddress | 0x40;
+  SPI.transfer(registerAddress);
   SPI.transfer(0x0B);
 
-  digitalWrite(CS,HIGH);
+  digitalWrite(spiCableSelect,HIGH);
   delay(1);
-  digitalWrite(CS,LOW);
+  digitalWrite(spiCableSelect,LOW);
 
 //  DataRate
-  add = 0x2C;
-  add = add | 0x40;
-  SPI.transfer(add);
+  registerAddress = 0x2C;
+  registerAddress = registerAddress | 0x40;
+  SPI.transfer(registerAddress);
   SPI.transfer(0x0D);
   
-  digitalWrite(CS,HIGH);
+  digitalWrite(spiCableSelect,HIGH);
   delay(1);
 //  SPI.endTransaction();
 }
 
 int getZ(){
 //    SPI.beginTransaction(settingsA);
-  digitalWrite(CS,LOW);
+  digitalWrite(spiCableSelect,LOW);
 
 //  Get Z data
-  add = 0x36;
-  add = add | 0x40; // Multiple bytes
-  add = add | 0x80; // Read operation
-  int a = SPI.transfer(add);
+  registerAddress = 0x36;
+  registerAddress = registerAddress | 0x40; // Multiple bytes
+  registerAddress = registerAddress | 0x80; // Read operation
+  int a = SPI.transfer(registerAddress);
   int b = SPI.transfer(0x00);
   int c = SPI.transfer(0x00);
 //  SPI.endTransaction();
-  digitalWrite(CS,HIGH);
+  digitalWrite(spiCableSelect,HIGH);
 
 //  Combine bytes
   int result;
@@ -88,74 +88,95 @@ int getZ(){
   }
 }
 
-int calcRSD(long input) {
+int calculateRandomStrokeDelay(long input) {
   if (input < minVelocity){
     return 150;
   }
   else if (input > minVelocity && input < maxVelocity){
-    int temp = map(input,minVelocity,maxVelocity,150,50);
-    return temp;
+    return map(input,minVelocity,maxVelocity,150,50);
   }
   else {
     return 50;
   }
 }
 
-void beginVelocityRead () {
-  velocityRead = true;
+//void beginVelocityRead () {
+//  velocityRead = true;
 //  digitalWrite(yellowLED,HIGH);
+//}
+
+void printStatus(int randomStrokeDelay){
+  Serial.print("Random Stroke Delay: ");
+  Serial.print(randomStrokeDelay);
+  Serial.println(" ms");
+  Serial.println("");
 }
 
-void printStatus(int RSD){
-  Serial.println("");
-  Serial.print("RSD: ");
-  Serial.print(RSD);
-  Serial.println(" ms");
+bool isApplicatorMoving () {
+  if (digitalRead(applicatorHomePositionSensor)){
+    digitalWrite(yellowLED,HIGH);
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+bool boxDetected() {
+  if (digitalRead(boxSensorPin)) {
+    return false;
+  }
+  else {
+    return true;
+  }
+}
+
+void sendRandomStrokeDelaySignal () {
+  delay(randomStrokeDelay);
+  digitalWrite(randomStrokeDelayOutputPin,HIGH);
+  digitalWrite(redLED,HIGH);
+  delay(cycleDelay);
+  digitalWrite(yellowLED,LOW);
+  digitalWrite(redLED,LOW);
+  digitalWrite(randomStrokeDelayOutputPin,LOW);   
 }
 
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
   Serial.println("Starting...");
-  pinMode(applyStart,INPUT);
-  pinMode(sensorSwitch,INPUT_PULLUP);
-  pinMode(strokeOutput,OUTPUT);
+  pinMode(applicatorHomePositionSensor,INPUT_PULLUP);
+  pinMode(boxSensorPin,INPUT_PULLUP);
+  pinMode(randomStrokeDelayOutputPin,OUTPUT);
   pinMode(redLED,OUTPUT);
   pinMode(yellowLED,OUTPUT);
-  adxlInit();
+  initiateAccelerometer();
   delay(1000);
-  attachInterrupt(digitalPinToInterrupt(applyStart),beginVelocityRead,HIGH);
+//  attachInterrupt(digitalPinToInterrupt(applicatorHomePositionSensor),beginVelocityRead,FALLING);
   Serial.println("Ready!");
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  Serial.println(digitalRead(applyStart));
-  if (velocityRead) {
-    while (digitalRead(sensorSwitch)){
-      Serial.println("Collecting");
-      delay(tDelay);  
-      area += (((getZ()*-1)+250) * tDelay);
-      Serial.println(area);
-      digitalWrite(yellowLED,HIGH);
+  if (isApplicatorMoving()) {
+
+    
+    Serial.println("Collecting acclerometer data...");
+    while (!boxDetected()){
+      delay(accelerometerSampleDelay);  
+      accelerometerCurveArea += (((getZ()*-1)+250) * accelerometerSampleDelay);
+//      Serial.println(accelerometerCurveArea);
     }
-    Serial.println("Output");
-    velocityRead = false;
-    RSD = calcRSD(area);
-    area = 0;
-    printStatus(RSD);
-    delay(RSD);
-    digitalWrite(strokeOutput,HIGH);
-    digitalWrite(redLED,HIGH);
-    delay(cycleDelay);
-    digitalWrite(yellowLED,LOW);
-    digitalWrite(redLED,LOW);
-    digitalWrite(strokeOutput,LOW);    
+    
+    Serial.println("Box detected!");
+    randomStrokeDelay = calculateRandomStrokeDelay(accelerometerCurveArea);
+    accelerometerCurveArea = 0;
+    printStatus(randomStrokeDelay);
+    sendRandomStrokeDelaySignal();
+    Serial.println("Waiting...");
   }
+
   else{
-//  digitalWrite(yellowLED,HIGH);
-  delay(1);
-//  digitalWrite(yellowLED,LOW);
+    delay(1);
   }
-//  delay(1);
+
 }
