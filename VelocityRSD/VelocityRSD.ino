@@ -14,12 +14,13 @@ int spiCableSelect = 10;
 long accelerometerCurveArea = 0;
 int accelerometerSampleDelay = 5;
 int applicatorHomePositionSensor = 2;
-//bool velocityRead = false;
-long minVelocity = 6000;
-long maxVelocity = 45000;
-int cycleDelay = 1000;
+int cycleDelay = 2000;
 int randomStrokeDelay;
 int registerAddress;
+long minVelocityToCalculate = 1000;
+long maxVelocityToCalculate = 37500;
+int maxRandomStrokeDelayTime = 110;
+int minRandomStrokeDelayTime = 45;
 
 SPISettings settingsA(400000,MSBFIRST,SPI_MODE3);
 
@@ -60,11 +61,9 @@ void initiateAccelerometer (){
   
   digitalWrite(spiCableSelect,HIGH);
   delay(1);
-//  SPI.endTransaction();
 }
 
 int getZ(){
-//    SPI.beginTransaction(settingsA);
   digitalWrite(spiCableSelect,LOW);
 
 //  Get Z data
@@ -74,12 +73,13 @@ int getZ(){
   int a = SPI.transfer(registerAddress);
   int b = SPI.transfer(0x00);
   int c = SPI.transfer(0x00);
-//  SPI.endTransaction();
   digitalWrite(spiCableSelect,HIGH);
 
 //  Combine bytes
   int result;
   result  = ((c << 8) | b) + 7;
+//  Serial.print("getZ(): ");
+//  Serial.println(result);
   if ( result > 240 && result < 260 ) {
     return 250;
   }
@@ -89,26 +89,23 @@ int getZ(){
 }
 
 int calculateRandomStrokeDelay(long input) {
-  if (input < minVelocity){
-    return 150;
+  if (input < minVelocityToCalculate){
+    return maxRandomStrokeDelayTime;
   }
-  else if (input > minVelocity && input < maxVelocity){
-    return map(input,minVelocity,maxVelocity,150,50);
+  else if (input > minVelocityToCalculate && input < maxVelocityToCalculate){
+    return map(input,minVelocityToCalculate,maxVelocityToCalculate,maxRandomStrokeDelayTime,minRandomStrokeDelayTime);
   }
   else {
-    return 50;
+    return minRandomStrokeDelayTime;
   }
 }
 
-//void beginVelocityRead () {
-//  velocityRead = true;
-//  digitalWrite(yellowLED,HIGH);
-//}
-
-void printStatus(int randomStrokeDelay){
+void printStatus(int randomStrokeDelay, long accelerometerCurveArea){
   Serial.print("Random Stroke Delay: ");
   Serial.print(randomStrokeDelay);
   Serial.println(" ms");
+  Serial.print("Velocity: ");
+  Serial.println(accelerometerCurveArea);
   Serial.println("");
 }
 
@@ -132,13 +129,27 @@ bool boxDetected() {
 }
 
 void sendRandomStrokeDelaySignal () {
+  digitalWrite(redLED,HIGH);
   delay(randomStrokeDelay);
   digitalWrite(randomStrokeDelayOutputPin,HIGH);
-  digitalWrite(redLED,HIGH);
   delay(cycleDelay);
   digitalWrite(yellowLED,LOW);
   digitalWrite(redLED,LOW);
   digitalWrite(randomStrokeDelayOutputPin,LOW);   
+}
+
+void printSettings() {
+  Serial.println("");
+  Serial.print("Minimum Velocity: ");
+  Serial.println(minVelocityToCalculate);
+  Serial.print("Maximum Velocity: ");
+  Serial.println(maxVelocityToCalculate);
+  Serial.print("Minimum Delay Time: ");
+  Serial.println(minRandomStrokeDelayTime);  
+  Serial.print("Maximum Delay Time: ");
+  Serial.println(maxRandomStrokeDelayTime);
+  Serial.println("");
+  
 }
 
 void setup() {
@@ -151,16 +162,13 @@ void setup() {
   pinMode(redLED,OUTPUT);
   pinMode(yellowLED,OUTPUT);
   initiateAccelerometer();
-  delay(1000);
-//  attachInterrupt(digitalPinToInterrupt(applicatorHomePositionSensor),beginVelocityRead,FALLING);
+  printSettings();
   Serial.println("Ready!");
 }
 
 void loop() {
   if (isApplicatorMoving()) {
-
-    
-    Serial.println("Collecting acclerometer data...");
+    Serial.println("Collecting accelerometer data...");
     while (!boxDetected()){
       delay(accelerometerSampleDelay);  
       accelerometerCurveArea += (((getZ()*-1)+250) * accelerometerSampleDelay);
@@ -169,9 +177,9 @@ void loop() {
     
     Serial.println("Box detected!");
     randomStrokeDelay = calculateRandomStrokeDelay(accelerometerCurveArea);
-    accelerometerCurveArea = 0;
-    printStatus(randomStrokeDelay);
+    printStatus(randomStrokeDelay,accelerometerCurveArea);
     sendRandomStrokeDelaySignal();
+    accelerometerCurveArea = 0;
     Serial.println("Waiting...");
   }
 
