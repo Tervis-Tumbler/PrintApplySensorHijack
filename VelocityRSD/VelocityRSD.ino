@@ -78,8 +78,6 @@ int getZ(){
 //  Combine bytes
   int result;
   result  = ((c << 8) | b) + 7;
-//  Serial.print("getZ(): ");
-//  Serial.println(result);
   if ( result > 240 && result < 260 ) {
     return 250;
   }
@@ -153,7 +151,6 @@ void printSettings() {
 }
 
 void setup() {
-  // put your setup code here, to run once:
   Serial.begin(9600);
   Serial.println("Starting...");
   pinMode(applicatorHomePositionSensor,INPUT_PULLUP);
@@ -172,7 +169,6 @@ void loop() {
     while (!boxDetected()){
       delay(accelerometerSampleDelay);  
       accelerometerCurveArea += (((getZ()*-1)+250) * accelerometerSampleDelay);
-//      Serial.println(accelerometerCurveArea);
     }
     
     Serial.println("Box detected!");
