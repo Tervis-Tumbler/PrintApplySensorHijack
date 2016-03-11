@@ -19,7 +19,7 @@ int randomStrokeDelay;
 int registerAddress;
 long minVelocityToCalculate = 1000;
 long maxVelocityToCalculate = 37500;
-int maxRandomStrokeDelayTime = 110;
+int maxRandomStrokeDelayTime = 120;
 int minRandomStrokeDelayTime = 45;
 
 SPISettings settingsA(400000,MSBFIRST,SPI_MODE3);

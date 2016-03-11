@@ -1,0 +1,21 @@
+C1	100uf, 50v
+C2	10uf, 50v
+D1	LED - Yellow
+D2	LED - Red
+Q1	P2N2222A	
+R1	1K Ohm	1K Ohm, 1W
+R2	10K Ohm	10K Ohm, 1/6W
+R3	10K Ohm	10K Ohm, 1/6W
+R4	330 Ohm	330 Ohm, 1/6W
+R5	330 Ohm	330 Ohm, 1/6W
+R6	330 Ohm	330 Ohm, 1/6W
+R7	330 Ohm	330 Ohm, 1/6W
+R8	330 Ohm	330 Ohm, 1/6W
+R9	330 Ohm	330 Ohm, 1/6W
+R10	330 Ohm	330 Ohm, 1/6W
+R11	330 Ohm	330 Ohm, 1/6W
+SW	Microswitch, Lever, SPST
+U1	L7805CV	Addicore L7805CV +5v
+U2	Sparkfun ADXL345 Breakout Board
+U3	Arduino Uno R3
+TO-220 Heatsink, 2.5W
