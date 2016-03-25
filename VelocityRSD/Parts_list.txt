@@ -19,3 +19,11 @@ U1	L7805CV	Addicore L7805CV +5v
 U2	Sparkfun ADXL345 Breakout Board
 U3	Arduino Uno R3
 TO-220 Heatsink, 2.5W
+Breakaway headers, minimum 24
+2 x Sparkfun RJ45 breakout boards 
+2 x Sparkfun RJ45 connectors (non-MagJack)
+1 x Arduino Enclosure
+Breadboard + wires
+#6-1/4 hex cap screw
+#6 washer
+#6 nut

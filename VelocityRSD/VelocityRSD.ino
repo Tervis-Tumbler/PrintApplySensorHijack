@@ -19,8 +19,8 @@ int randomStrokeDelay;
 int registerAddress;
 long minVelocityToCalculate = 1000;
 long maxVelocityToCalculate = 37500;
-int maxRandomStrokeDelayTime = 120;
-int minRandomStrokeDelayTime = 45;
+int maxRandomStrokeDelayTime = 125; // +5 to compensate for overpacked large boxes
+int minRandomStrokeDelayTime = 50; // +5 to compensate for overpacked small boxes
 
 SPISettings settingsA(400000,MSBFIRST,SPI_MODE3);
 
