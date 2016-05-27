@@ -17,10 +17,10 @@ int applicatorHomePositionSensor = 2;
 int cycleDelay = 2000;
 int randomStrokeDelay;
 int registerAddress;
-long minVelocityToCalculate = 1000;
-long maxVelocityToCalculate = 37500;
-int maxRandomStrokeDelayTime = 155; // +15 to compensate for overpacked large boxes
-int minRandomStrokeDelayTime = 60; // +5 to compensate for overpacked small boxes
+long minVelocityToCalculate = 9000;
+long maxVelocityToCalculate = 45000; //37500
+int maxRandomStrokeDelayTime = 130; // +15 to compensate for overpacked large boxes
+int minRandomStrokeDelayTime = 45; // +5 to compensate for overpacked small boxes
 
 SPISettings settingsA(400000,MSBFIRST,SPI_MODE3);
 
