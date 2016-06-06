@@ -1,0 +1,47 @@
+Parts list:
+1 x 100uF, 50v electrolytic capacitor
+1 x 10uF, 50v electrolytic capacitor
+1 x Yellow LED
+1 x Red LED
+1 x P2N2222A transistor
+1 x 1K Ohm, 1W resistor
+2 x 10K Ohm, 1/6 resistor
+8 x 330 Ohm, 1/6 resistor
+1 x SPST lever microswitch
+1 x Breakaway pin headers, 24 pin minimum 
+2 x Sparkfun RJ45 breakout boards 
+2 x Sparkfun RJ45 connectors (non-MagJack)
+1 x Arduino Enclosure
+
+1 x mini breadboard and wiring kit
+http://www.amazon.com/Boundto-120PCS-Breadboard-Solderless-Prototype/dp/B017FXDLE6
+
+1 x Addicore L7805CV 5v voltage regulator
+1 x TO-220 Heatsink, 2.5W
+1 x #6-1/4 hex cap screw
+1 x #6 washer
+1 x #6 nut
+
+
+
+Schematic map:
+C1	100uf, 50v
+C2	10uf, 50v
+D1	LED - Yellow
+D2	LED - Red
+Q1	P2N2222A	
+R1	1K Ohm	1K Ohm, 1W
+R2	10K Ohm	10K Ohm, 1/6W
+R3	10K Ohm	10K Ohm, 1/6W
+R4	330 Ohm	330 Ohm, 1/6W
+R5	330 Ohm	330 Ohm, 1/6W
+R6	330 Ohm	330 Ohm, 1/6W
+R7	330 Ohm	330 Ohm, 1/6W
+R8	330 Ohm	330 Ohm, 1/6W
+R9	330 Ohm	330 Ohm, 1/6W
+R10	330 Ohm	330 Ohm, 1/6W
+R11	330 Ohm	330 Ohm, 1/6W
+SW	Microswitch, Lever, SPST
+U1	L7805CV	Addicore L7805CV +5v
+U2	Sparkfun ADXL345 Breakout Board
+U3	Arduino Uno R3
