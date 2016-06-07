@@ -50,9 +50,17 @@ Random Stroke Delay: 18 ms
 Velocity: 50725  
   
 Waiting...  
-  
+
+## Schematic
+
+![PrintApplySensorInterceptor Schematic](/img/Interceptor_Schematic.png)  
+ 
+## Pictures in production
+ 
 ![PrintApplySensorInterceptor inside FoxIV Mod6](/img/Interceptor_InsideCase.JPG)  
 
 ![Departure Sensor Switch placement](/img/Interceptor_DepartureSwitch.JPG)  
 
 ![ADXL345 placement on applicator](/img/Interceptor_ApplicatorAccelerometerFar.JPG)  
+
+
