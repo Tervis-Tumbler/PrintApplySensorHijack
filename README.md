@@ -1,10 +1,5 @@
-# PrintApplySensorHijack
-Hijacks the signal from the PrintApply box sensor and delays it according to applicator position.
-
-The current sketch in use is VelocityRSD.ino.
-
-PrintApplySensorHijack.ino requires HC-SR04 library https://github.com/JRodrigoTech/Ultrasonic-HC-SR04
-
+# PrintApplySensorInterceptor
+Intercepts the signal from the PrintApply box sensor and delays it according to applicator velocity.
 
 ## Parts list:
 1 x 100uF, 50v electrolytic capacitor
@@ -20,16 +15,13 @@ PrintApplySensorHijack.ino requires HC-SR04 library https://github.com/JRodrigoT
 2 x Sparkfun RJ45 breakout boards 
 2 x Sparkfun RJ45 connectors (non-MagJack)
 1 x Arduino Enclosure
-
 1 x mini breadboard and wiring kit
 http://www.amazon.com/Boundto-120PCS-Breadboard-Solderless-Prototype/dp/B017FXDLE6
-
 1 x Addicore L7805CV 5v voltage regulator
 1 x TO-220 Heatsink, 2.5W
 1 x #6-1/4 hex cap screw
 1 x #6 washer
 1 x #6 nut
-
 
 ## Example output from the Arduino
 Starting...
@@ -59,3 +51,4 @@ Velocity: 50725
 
 Waiting...
 
+![PrintApplySensorInterceptor inside FoxIV Mod6](/img/Interceptor_InsideCase.JPG)
