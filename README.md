@@ -2,8 +2,8 @@
 Intercepts the signal from the PrintApply box sensor and delays it according to applicator velocity.
 
 ## Parts list:
-1 x 100uF, 50v electrolytic capacitor
-1 x 10uF, 50v electrolytic capacitor
+1 x 100uF, 50v electrolytic capacitor 
+1 x 10uF, 50v electrolytic capacitor 
 1 x Yellow LED
 1 x Red LED
 1 x P2N2222A transistor
