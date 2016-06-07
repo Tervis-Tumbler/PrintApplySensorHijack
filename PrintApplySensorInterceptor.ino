@@ -13,7 +13,7 @@ int spiCableSelect = 10;
 
 long accelerometerCurveArea = 0;
 int accelerometerSampleDelay = 5;
-int applicatorHomePositionSensor = 2;
+int applicatorDepartureSensor = 2;
 int cycleDelay = 2000;
 int randomStrokeDelay;
 int registerAddress;
@@ -86,7 +86,7 @@ int getZ(){
   }
 }
 
-int calculateRandomStrokeDelay(long input) {
+int calculateRandomStrokeDelay(long input) { // Map Random Stroke Delay values to different velocities.
   if (input < minVelocityToCalculate){
     return maxRandomStrokeDelayTime;
   }
@@ -108,7 +108,7 @@ void printStatus(int randomStrokeDelay, long accelerometerCurveArea){
 }
 
 bool isApplicatorMoving () {
-  if (digitalRead(applicatorHomePositionSensor)){
+  if (digitalRead(applicatorDepartureSensor)){
     digitalWrite(yellowLED,HIGH);
     return true;
   }
@@ -150,10 +150,23 @@ void printSettings() {
   
 }
 
+void getAverageVelocityUsingRiemannSums () {
+  while (!boxDetected()){
+    delay(accelerometerSampleDelay);
+    // Units are in 1/250th of a g. Add 250 units to offset gravity.
+    int netAccelerometerValue = (getZ()*-1) + 250;
+    // Acceleration curve is estimated by grabbing samples of accelerometer values over time.
+    // The average velocity is calculated by estimating the area of the acceleration curve, 
+    // accelerometerCurveArea, using the Riemann sum method of calculating curve area.
+    // https://en.wikipedia.org/wiki/Riemann_sum
+    accelerometerCurveArea += ( netAccelerometerValue * accelerometerSampleDelay); //
+  }
+}
+  
 void setup() {
   Serial.begin(9600);
   Serial.println("Starting...");
-  pinMode(applicatorHomePositionSensor,INPUT_PULLUP);
+  pinMode(applicatorDepartureSensor,INPUT_PULLUP);
   pinMode(boxSensorPin,INPUT_PULLUP);
   pinMode(randomStrokeDelayOutputPin,OUTPUT);
   pinMode(redLED,OUTPUT);
@@ -164,13 +177,10 @@ void setup() {
 }
 
 void loop() {
+
   if (isApplicatorMoving()) {
     Serial.println("Collecting accelerometer data...");
-    while (!boxDetected()){
-      delay(accelerometerSampleDelay);  
-      accelerometerCurveArea += (((getZ()*-1)+250) * accelerometerSampleDelay);
-    }
-    
+    getAverageVelocityUsingRiemannSums();
     Serial.println("Box detected!");
     randomStrokeDelay = calculateRandomStrokeDelay(accelerometerCurveArea);
     printStatus(randomStrokeDelay,accelerometerCurveArea);
