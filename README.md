@@ -52,3 +52,7 @@ Velocity: 50725
 Waiting...
 
 ![PrintApplySensorInterceptor inside FoxIV Mod6](/img/Interceptor_InsideCase.JPG)
+
+![Departure Sensor Switch placement](/img/Interceptor_DepartureSwitch.JPG)
+
+![ADXL345 placement on applicator](/img/Interceptor_ApplicatorAccelerometerFar.JPG)
